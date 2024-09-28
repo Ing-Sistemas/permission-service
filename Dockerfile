@@ -1,8 +1,15 @@
-FROM gradle:7.6.0-jdk17 AS build
-COPY  . /home/gradle/src
+FROM gradle:8.7.0-jdk21 AS build
+
 WORKDIR /home/gradle/src
-RUN gradle assemble
-FROM openjdk:8-jre-slim
-RUN mkdir /app
-COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=production","/app/spring-boot-application.jar"]
+
+COPY build.gradle settings.gradle gradle/ ./
+
+COPY src ./src
+
+WORKDIR /home/gradle/src
+
+RUN gradle build
+
+EXPOSE ${PORT}
+
+ENTRYPOINT ["java","-jar","/home/gradle/src/build/libs/Permission-Service-0.0.1-SNAPSHOT.jar"]
