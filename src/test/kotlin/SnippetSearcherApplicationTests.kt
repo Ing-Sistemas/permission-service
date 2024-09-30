@@ -7,6 +7,7 @@ class SnippetSearcherApplicationTests {
 
 	@Test
 	fun contextLoads() {
+
 	}
 
 }
