@@ -38,3 +38,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 volumes:
   postgres_data:
+
+networks:
+  wii-network:
+    external: true
