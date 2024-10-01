@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 8080:8080
+      - ${PORT}:${PORT}
     env_file:
       - .env
     environment:
@@ -18,7 +18,7 @@ services:
     depends_on:
         - db
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health/check"]
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT}/api/health/check"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
     ports:
-        - 5432:5432
+        - ${DB_PORT}:${DB_PORT}
     environment:
         POSTGRES_DB: ${POSTGRES_DB}
         POSTGRES_USER: ${POSTGRES_USER}
