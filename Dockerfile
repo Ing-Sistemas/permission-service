@@ -9,5 +9,5 @@ FROM openjdk:21-jdk-slim
 EXPOSE 8080
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/Permission-Service-0.0.1-SNAPSHOT.jar /app/spring-boot-application.jar
-
+RUN apt-get update && apt-get install -y curl
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=production","/app/spring-boot-application.jar"]
