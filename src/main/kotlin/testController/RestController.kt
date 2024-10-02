@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class HelloController {
-    @GetMapping("/")
+    @GetMapping("/greet")
     fun index(): String {
-        return "Greetings from Spring Boot!"
+        return "Greetings from Spring Boot, this is permission service!"
     }
 }

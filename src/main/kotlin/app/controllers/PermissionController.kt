@@ -1,6 +1,6 @@
-package com.example.springboot.controllers
+package com.example.springboot.app.controllers
 
-import com.example.springboot.service.PermissionService
+import com.example.springboot.app.service.PermissionService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller

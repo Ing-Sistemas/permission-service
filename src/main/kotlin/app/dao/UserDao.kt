@@ -1,4 +1,4 @@
-package com.example.springboot.dao
+package com.example.springboot.app.dao
 
 import org.springframework.stereotype.Repository
 

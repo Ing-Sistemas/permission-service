@@ -1,6 +1,6 @@
-package com.example.springboot.service
+package com.example.springboot.app.service
 
-import com.example.springboot.dao.UserDao
+import com.example.springboot.app.dao.UserDao
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
