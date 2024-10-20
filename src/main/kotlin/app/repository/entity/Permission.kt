@@ -7,14 +7,11 @@ import jakarta.persistence.*
 @Table(name = "user_snippet_permissions")
 data class Permission(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    @Column(name = "snippet_id", nullable = false)
+    val snippetId: String,
 
     @Column(name = "user_id", nullable = false)
     val userId: String,
-
-    @Column(name = "snippet_id", nullable = false)
-    val snippetId: String,
 
     @Column(name = "permissions", nullable = false)
     val permissions: String
