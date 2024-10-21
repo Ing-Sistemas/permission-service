@@ -7,6 +7,8 @@ import com.example.springboot.app.utils.PermissionRequest
 import com.example.springboot.app.utils.PermissionType
 import org.springframework.http.ResponseEntity
 import com.example.springboot.app.utils.PermissionType.*
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -20,7 +22,8 @@ class PermissionController(private val permissionService: PermissionService) {
 
     @PostMapping("/create")
     fun createPermission(
-        @RequestBody permissionRequest: PermissionRequest
+        @RequestBody permissionRequest: PermissionRequest,
+        @AuthenticationPrincipal jwt: Jwt
     ): ResponseEntity<PermissionEntity> {
         try {
             val snippetId = permissionRequest.snippetId
