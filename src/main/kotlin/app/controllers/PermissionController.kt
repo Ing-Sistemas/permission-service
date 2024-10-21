@@ -3,6 +3,7 @@ package com.example.springboot.app.controllers
 import com.example.springboot.app.dto.PermissionDTO
 import com.example.springboot.app.repository.entity.PermissionEntity
 import com.example.springboot.app.service.PermissionService
+import com.example.springboot.app.utils.PermissionRequest
 import com.example.springboot.app.utils.PermissionType
 import org.springframework.http.ResponseEntity
 import com.example.springboot.app.utils.PermissionType.*
@@ -19,10 +20,11 @@ class PermissionController(private val permissionService: PermissionService) {
 
     @PostMapping("/create")
     fun createPermission(
-        @RequestParam userId: String,
-        @RequestParam snippetId: Long
+        @RequestBody permissionRequest: PermissionRequest
     ): ResponseEntity<PermissionEntity> {
         try {
+            val snippetId = permissionRequest.snippetId
+            val userId = permissionRequest.userId
             val ownerPermissions = setOf(READ, WRITE, EXECUTE, SHARE)
             val permissionDTO = PermissionDTO(snippetId, userId, ownerPermissions)
             val permission = permissionService.addPermission(permissionDTO)
