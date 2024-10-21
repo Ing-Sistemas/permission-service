@@ -1,26 +1,50 @@
 package com.example.springboot.app.controllers
 
+import com.example.springboot.app.dto.PermissionDTO
+import com.example.springboot.app.repository.entity.PermissionEntity
 import com.example.springboot.app.service.PermissionService
+import com.example.springboot.app.utils.PermissionType
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
+import com.example.springboot.app.utils.PermissionType.*
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("/api")
 class PermissionController(private val permissionService: PermissionService) {
 
-    @GetMapping("get")
-    fun getPermissionById(@RequestBody id: String): ResponseEntity<List<Boolean>> {
-        return permissionService.getPermissionById(id)
+    @PostMapping("/create")
+    fun createPermission(
+        @RequestParam userId: String,
+        @RequestParam snippetId: Long
+    ): ResponseEntity<PermissionEntity> {
+        try {
+            val ownerPermissions = setOf(READ, WRITE, EXECUTE, SHARE)
+            val permissionDTO = PermissionDTO(snippetId, userId, ownerPermissions)
+            val permission = permissionService.addPermission(permissionDTO)
+            return ResponseEntity.ok(permission)
+        } catch (e: Exception) {
+            println(e.message)
+            return ResponseEntity.status(500).body(null)
+        }
     }
 
-    @GetMapping("ping")
-    fun pongSnippetService(): Mono<String> {
-        return Mono.just("pong from permission service")
+    @GetMapping("/get")
+    fun getPermissionById(
+        @RequestParam userId: String,
+        @RequestParam snippetId: Long
+    ): ResponseEntity<Set<PermissionType>> {
+        try {
+            val permissions = permissionService.getPermissions(snippetId, userId)
+            return ResponseEntity.ok(permissions.permissions)
+        } catch (e: Exception) {
+            println(e.message)
+            return ResponseEntity.status(500).body(null)
+        }
     }
 
 }

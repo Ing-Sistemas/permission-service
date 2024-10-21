@@ -1,30 +1,33 @@
 package com.example.springboot
 
-import org.springframework.boot.CommandLineRunner
-import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.context.ApplicationContext
-import org.springframework.context.annotation.Bean
-import java.util.*
+import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class Application {
-    @Bean
-    fun commandLineRunner(ctx: ApplicationContext): CommandLineRunner {
-        return CommandLineRunner { args: Array<String?>? ->
-            println("Let's inspect the beans provided by Spring Boot:")
-            val beanNames = ctx.beanDefinitionNames
-            Arrays.sort(beanNames)
-            for (beanName in beanNames) {
-                println(beanName)
-            }
-        }
-    }
+class PermissionServiceApplication
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            SpringApplication.run(Application::class.java, *args)
-        }
-    }
+//TODO establish if userId is received as a String or Long
+
+fun main(args: Array<String>) {
+    runApplication<PermissionServiceApplication>(*args)
 }
+
+// IDK what this is equisde
+//    @Bean
+//    fun commandLineRunner(ctx: ApplicationContext): CommandLineRunner {
+//        return CommandLineRunner { args: Array<String?>? ->
+//            val beanNames = ctx.beanDefinitionNames
+//            Arrays.sort(beanNames)
+//            for (beanName in beanNames) {
+//                println(beanName)
+//            }
+//        }
+//    }
+//
+//    companion object {
+//        @JvmStatic
+//        fun main(args: Array<String>) {
+//            SpringApplication.run(Application::class.java, *args)
+//        }
+//    }
+//}
