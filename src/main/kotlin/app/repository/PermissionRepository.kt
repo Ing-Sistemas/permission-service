@@ -1,11 +1,11 @@
 package com.example.springboot.app.repository
 
-import com.example.springboot.app.repository.entity.Permission
+import com.example.springboot.app.repository.entity.PermissionEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface PermissionRepository : JpaRepository<Permission, Long> {
-    fun findByUserId(userId: String): Permission
-    fun findBySnippetId(snippetId: String): Permission
+interface PermissionRepository : JpaRepository<PermissionEntity, Long> {
+    fun findByUserIdAndSnippetId(userId: String, snippetId: Long): PermissionEntity
+    fun findBySnippetId(snippetId: Long): PermissionEntity
 }
