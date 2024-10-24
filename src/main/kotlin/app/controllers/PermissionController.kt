@@ -1,5 +1,6 @@
 package com.example.springboot.app.controllers
 
+import com.example.springboot.app.auth.OAuth2ResourceServerSecurityConfiguration
 import com.example.springboot.app.dto.PermissionDTO
 import com.example.springboot.app.repository.entity.PermissionEntity
 import com.example.springboot.app.service.PermissionService
@@ -22,15 +23,20 @@ class PermissionController(private val permissionService: PermissionService) {
 
     @PostMapping("/create")
     fun createPermission(
-        @RequestBody permissionRequest: PermissionRequest,
-        @AuthenticationPrincipal jwt: Jwt
+        @RequestBody permissionRequest: PermissionRequest
     ): ResponseEntity<PermissionEntity> {
         try {
+            val jwt = permissionRequest.jwt
             val snippetId = permissionRequest.snippetId
-            val userId = permissionRequest.userId
+            val auth = OAuth2ResourceServerSecurityConfiguration(
+                System.getenv("AUTH0_AUDIENCE"),
+                System.getenv("AUTH_SERVER_URI")
+            ).jwtDecoder()
+            val userId = auth.decode(jwt.toString()).subject!!
             val ownerPermissions = setOf(READ, WRITE, EXECUTE, SHARE)
             val permissionDTO = PermissionDTO(snippetId, userId, ownerPermissions)
             val permission = permissionService.addPermission(permissionDTO)
+            println(permission)
             return ResponseEntity.ok(permission)
         } catch (e: Exception) {
             println(e.message)
@@ -41,7 +47,7 @@ class PermissionController(private val permissionService: PermissionService) {
     @GetMapping("/get")
     fun getPermissionById(
         @RequestParam userId: String,
-        @RequestParam snippetId: Long
+        @RequestParam snippetId: String
     ): ResponseEntity<Set<PermissionType>> {
         try {
             val permissions = permissionService.getPermissions(snippetId, userId)

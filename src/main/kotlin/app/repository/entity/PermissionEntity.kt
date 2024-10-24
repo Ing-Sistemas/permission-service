@@ -8,7 +8,7 @@ import jakarta.persistence.*
 data class PermissionEntity(
     @Id
     @Column(name = "snippet_id", nullable = false)
-    val snippetId: Long,
+    val snippetId: String,
 
     @Column(name = "user_id", nullable = false)
     val userId: String,

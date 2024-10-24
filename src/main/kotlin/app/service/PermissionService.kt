@@ -22,7 +22,7 @@ class PermissionService @Autowired constructor(
         return permissionRepository.save(permissionEntity)
     }
 
-    fun getPermissions(snippetId: Long, userId: String): PermissionEntity {
+    fun getPermissions(snippetId: String, userId: String): PermissionEntity {
         return permissionRepository.findByUserIdAndSnippetId(userId, snippetId)
     }
 

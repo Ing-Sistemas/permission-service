@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface PermissionRepository : JpaRepository<PermissionEntity, Long> {
-    fun findByUserIdAndSnippetId(userId: String, snippetId: Long): PermissionEntity
-    fun findBySnippetId(snippetId: Long): PermissionEntity
+interface PermissionRepository : JpaRepository<PermissionEntity, String> {
+    fun findByUserIdAndSnippetId(userId: String, snippetId: String): PermissionEntity
+    fun findBySnippetId(snippetId: String): PermissionEntity
 }
