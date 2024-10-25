@@ -8,14 +8,10 @@ import com.example.springboot.app.utils.PermissionRequest
 import com.example.springboot.app.utils.PermissionType
 import org.springframework.http.ResponseEntity
 import com.example.springboot.app.utils.PermissionType.*
+import org.springframework.http.HttpHeaders
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api")
@@ -24,9 +20,10 @@ class PermissionController(private val permissionService: PermissionService) {
     @PostMapping("/create")
     fun createPermission(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestBody permissionRequest: PermissionRequest
+        @RequestBody permissionRequest: PermissionRequest,
+        @RequestHeader headers: HttpHeaders
     ): ResponseEntity<PermissionEntity> {
-        try {
+        return try {
             val snippetId = permissionRequest.snippetId
             val auth = OAuth2ResourceServerSecurityConfiguration(
                 System.getenv("AUTH0_AUDIENCE"),
@@ -37,10 +34,10 @@ class PermissionController(private val permissionService: PermissionService) {
             val permissionDTO = PermissionDTO(snippetId, userId, ownerPermissions)
             val permission = permissionService.addPermission(permissionDTO)
             println(permission)
-            return ResponseEntity.ok(permission)
+            ResponseEntity.ok(permission)
         } catch (e: Exception) {
             println(e.message)
-            return ResponseEntity.status(500).body(null)
+            ResponseEntity.status(500).body(null)
         }
     }
 
