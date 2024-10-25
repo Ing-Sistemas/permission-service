@@ -25,11 +25,7 @@ class PermissionController(private val permissionService: PermissionService) {
     ): ResponseEntity<PermissionEntity> {
         return try {
             val snippetId = permissionRequest.snippetId
-            val auth = OAuth2ResourceServerSecurityConfiguration(
-                System.getenv("AUTH0_AUDIENCE"),
-                System.getenv("AUTH_SERVER_URI")
-            ).jwtDecoder()
-            val userId = auth.decode(jwt.tokenValue).subject!!
+            val userId = getUserIdFromJWT(jwt)
             val ownerPermissions = setOf(READ, WRITE, EXECUTE, SHARE)
             val permissionDTO = PermissionDTO(snippetId, userId, ownerPermissions)
             val permission = permissionService.addPermission(permissionDTO)
@@ -43,16 +39,26 @@ class PermissionController(private val permissionService: PermissionService) {
 
     @GetMapping("/get")
     fun getPermissionById(
-        @RequestParam userId: String,
-        @RequestParam snippetId: String
-    ): ResponseEntity<Set<PermissionType>> {
+        @RequestParam snippetId: String,
+        @RequestHeader headers: HttpHeaders,
+        @AuthenticationPrincipal jwt: Jwt,
+        ): ResponseEntity<Set<PermissionType>> {
         try {
+            val userId = getUserIdFromJWT(jwt)
             val permissions = permissionService.getPermissions(snippetId, userId)
             return ResponseEntity.ok(permissions.permissions)
         } catch (e: Exception) {
             println(e.message)
             return ResponseEntity.status(500).body(null)
         }
+    }
+
+    private fun getUserIdFromJWT(jwt: Jwt): String {
+        val auth = OAuth2ResourceServerSecurityConfiguration(
+            System.getenv("AUTH0_AUDIENCE"),
+            System.getenv("AUTH_SERVER_URI")
+        ).jwtDecoder()
+        return auth.decode(jwt.tokenValue).subject!!
     }
 
 }
