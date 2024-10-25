@@ -28,9 +28,9 @@ class PermissionController(private val permissionService: PermissionService) {
             val userId = getUserIdFromJWT(jwt)
             val ownerPermissions = setOf(READ, WRITE, EXECUTE, SHARE)
             val permissionDTO = PermissionDTO(snippetId, userId, ownerPermissions)
-            val permission = permissionService.addPermission(permissionDTO)
-            println(permission)
-            ResponseEntity.ok(permission)
+            val permissionEntity = permissionService.addPermission(permissionDTO)
+            println(permissionEntity)
+            ResponseEntity.ok(permissionEntity)
         } catch (e: Exception) {
             println(e.message)
             ResponseEntity.status(500).body(null)
@@ -39,13 +39,13 @@ class PermissionController(private val permissionService: PermissionService) {
 
     @GetMapping("/get")
     fun getPermissionById(
-        @RequestParam snippetId: String,
-        @RequestHeader headers: HttpHeaders,
         @AuthenticationPrincipal jwt: Jwt,
+        @RequestParam permissionRequest: PermissionRequest,
+        @RequestHeader headers: HttpHeaders,
         ): ResponseEntity<Set<PermissionType>> {
         try {
             val userId = getUserIdFromJWT(jwt)
-            val permissions = permissionService.getPermissions(snippetId, userId)
+            val permissions = permissionService.getPermissions(permissionRequest.snippetId, userId)
             return ResponseEntity.ok(permissions.permissions)
         } catch (e: Exception) {
             println(e.message)
