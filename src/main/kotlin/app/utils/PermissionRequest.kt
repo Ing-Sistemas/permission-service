@@ -4,5 +4,4 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2Res
 
 data class PermissionRequest(
     val snippetId: String,
-    val jwt: Jwt,
 )
