@@ -23,16 +23,16 @@ class PermissionController(private val permissionService: PermissionService) {
 
     @PostMapping("/create")
     fun createPermission(
+        @AuthenticationPrincipal jwt: Jwt,
         @RequestBody permissionRequest: PermissionRequest
     ): ResponseEntity<PermissionEntity> {
         try {
-            val jwt = permissionRequest.jwt
             val snippetId = permissionRequest.snippetId
             val auth = OAuth2ResourceServerSecurityConfiguration(
                 System.getenv("AUTH0_AUDIENCE"),
                 System.getenv("AUTH_SERVER_URI")
             ).jwtDecoder()
-            val userId = auth.decode(jwt.toString()).subject!!
+            val userId = auth.decode(jwt.tokenValue).subject!!
             val ownerPermissions = setOf(READ, WRITE, EXECUTE, SHARE)
             val permissionDTO = PermissionDTO(snippetId, userId, ownerPermissions)
             val permission = permissionService.addPermission(permissionDTO)
