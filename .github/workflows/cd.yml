@@ -41,6 +41,9 @@ jobs:
           name: permission-service-jar
           path: build/libs
 
+      - name: testing
+        run: ls -la build/libs
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
