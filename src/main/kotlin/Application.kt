@@ -6,8 +6,6 @@ import org.springframework.boot.runApplication
 @SpringBootApplication
 class PermissionServiceApplication
 
-//TODO establish if userId is received as a String or Long
-
 fun main(args: Array<String>) {
     runApplication<PermissionServiceApplication>(*args)
 }
