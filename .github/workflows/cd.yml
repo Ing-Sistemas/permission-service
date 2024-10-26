@@ -39,7 +39,7 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/Ing-Sistemas/permission-service:dev
+            ghcr.io/ing-sistemas/permission-service:dev
 
       - name: Build and push Docker image for production
         id: docker_build_prod
@@ -48,7 +48,7 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/Ing-Sistemas/permission-service:latest
+            ghcr.io/ing-sistemas/permission-service:latest
 
 #      - name: Push to GitHub Packages
 #        id: docker_build
