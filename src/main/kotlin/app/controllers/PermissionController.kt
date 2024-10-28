@@ -8,7 +8,7 @@ import com.example.springboot.app.utils.PermissionRequest
 import com.example.springboot.app.utils.PermissionType
 import org.springframework.http.ResponseEntity
 import com.example.springboot.app.utils.PermissionType.*
-import org.springframework.http.HttpHeaders
+import com.example.springboot.app.utils.ShareRequest
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
@@ -20,8 +20,7 @@ class PermissionController(private val permissionService: PermissionService) {
     @PostMapping("/create")
     fun createPermission(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestBody permissionRequest: PermissionRequest,
-        @RequestHeader headers: HttpHeaders
+        @RequestBody permissionRequest: PermissionRequest
     ): ResponseEntity<PermissionEntity> {
         return try {
             val snippetId = permissionRequest.snippetId
@@ -29,7 +28,6 @@ class PermissionController(private val permissionService: PermissionService) {
             val ownerPermissions = setOf(READ, WRITE, EXECUTE, SHARE)
             val permissionDTO = PermissionDTO(snippetId, userId, ownerPermissions)
             val permissionEntity = permissionService.addPermission(permissionDTO)
-            println(permissionEntity)
             ResponseEntity.ok(permissionEntity)
         } catch (e: Exception) {
             println(e.message)
@@ -40,8 +38,7 @@ class PermissionController(private val permissionService: PermissionService) {
     @GetMapping("/get")
     fun getPermissionById(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam permissionRequest: PermissionRequest,
-        @RequestHeader headers: HttpHeaders,
+        @RequestParam permissionRequest: PermissionRequest
         ): ResponseEntity<Set<PermissionType>> {
         try {
             val userId = getUserIdFromJWT(jwt)
@@ -50,6 +47,22 @@ class PermissionController(private val permissionService: PermissionService) {
         } catch (e: Exception) {
             println(e.message)
             return ResponseEntity.status(500).body(null)
+        }
+    }
+
+    @PostMapping("/share")
+    fun sharePermission(
+        @AuthenticationPrincipal jwt: Jwt,
+        @RequestBody shareRequest: ShareRequest
+    ): ResponseEntity<PermissionEntity> {
+        return try {
+            val snippetId = shareRequest.snippetId
+            val userId = shareRequest.friendId
+            val permissionDTO = PermissionDTO(snippetId, userId, setOf(READ))
+            ResponseEntity.ok(permissionService.updatePermission(permissionDTO))
+        } catch (e: Exception) {
+            println(e.message)
+            ResponseEntity.status(500).body(null)
         }
     }
 
