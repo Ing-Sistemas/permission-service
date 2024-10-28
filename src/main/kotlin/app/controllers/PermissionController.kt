@@ -8,7 +8,6 @@ import com.example.springboot.app.utils.PermissionRequest
 import com.example.springboot.app.utils.PermissionType
 import org.springframework.http.ResponseEntity
 import com.example.springboot.app.utils.PermissionType.*
-import org.springframework.http.HttpHeaders
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
@@ -20,8 +19,7 @@ class PermissionController(private val permissionService: PermissionService) {
     @PostMapping("/create")
     fun createPermission(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestBody permissionRequest: PermissionRequest,
-        @RequestHeader headers: HttpHeaders
+        @RequestBody permissionRequest: PermissionRequest
     ): ResponseEntity<PermissionEntity> {
         return try {
             val snippetId = permissionRequest.snippetId
@@ -29,7 +27,6 @@ class PermissionController(private val permissionService: PermissionService) {
             val ownerPermissions = setOf(READ, WRITE, EXECUTE, SHARE)
             val permissionDTO = PermissionDTO(snippetId, userId, ownerPermissions)
             val permissionEntity = permissionService.addPermission(permissionDTO)
-            println(permissionEntity)
             ResponseEntity.ok(permissionEntity)
         } catch (e: Exception) {
             println(e.message)
@@ -40,8 +37,7 @@ class PermissionController(private val permissionService: PermissionService) {
     @GetMapping("/get")
     fun getPermissionById(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam permissionRequest: PermissionRequest,
-        @RequestHeader headers: HttpHeaders,
+        @RequestParam permissionRequest: PermissionRequest
         ): ResponseEntity<Set<PermissionType>> {
         try {
             val userId = getUserIdFromJWT(jwt)
