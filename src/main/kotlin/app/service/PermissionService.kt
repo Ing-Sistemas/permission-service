@@ -22,6 +22,10 @@ class PermissionService @Autowired constructor(
         return permissionRepository.save(permissionEntity)
     }
 
+    fun updatePermission(permissionDTO: PermissionDTO): PermissionEntity {
+        return permissionRepository.save(translate(permissionDTO))
+    }
+
     fun getPermissions(snippetId: String, userId: String): PermissionEntity {
         return permissionRepository.findByUserIdAndSnippetId(userId, snippetId)
     }

@@ -8,6 +8,7 @@ import com.example.springboot.app.utils.PermissionRequest
 import com.example.springboot.app.utils.PermissionType
 import org.springframework.http.ResponseEntity
 import com.example.springboot.app.utils.PermissionType.*
+import com.example.springboot.app.utils.ShareRequest
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
@@ -46,6 +47,22 @@ class PermissionController(private val permissionService: PermissionService) {
         } catch (e: Exception) {
             println(e.message)
             return ResponseEntity.status(500).body(null)
+        }
+    }
+
+    @PostMapping("/share")
+    fun sharePermission(
+        @AuthenticationPrincipal jwt: Jwt,
+        @RequestBody shareRequest: ShareRequest
+    ): ResponseEntity<PermissionEntity> {
+        return try {
+            val snippetId = shareRequest.snippetId
+            val userId = shareRequest.friendId
+            val permissionDTO = PermissionDTO(snippetId, userId, setOf(READ))
+            ResponseEntity.ok(permissionService.updatePermission(permissionDTO))
+        } catch (e: Exception) {
+            println(e.message)
+            ResponseEntity.status(500).body(null)
         }
     }
 
