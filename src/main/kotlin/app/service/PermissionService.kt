@@ -30,6 +30,10 @@ class PermissionService @Autowired constructor(
         return permissionRepository.findByUserIdAndSnippetId(userId, snippetId)
     }
 
+    fun getSnippetsByUserId(userId: String): List<String> {
+        return permissionRepository.findSnippetIdsByUserIdAndOwnerPermissions(userId)
+    }
+
     private fun translate(permissionDTO: PermissionDTO): PermissionEntity{
         return PermissionEntity(
             snippetId = permissionDTO.snippetId,
