@@ -2,10 +2,10 @@ spring:
   application:
     name: permission-service
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${POSTGRES_DB}
+    url: jdbc:postgresql://${PERMISSION_DB_HOST}:${PERMISSION_DB_PORT}/${PERMISSION_POSTGRES_DB}
     driver-class-name: org.postgresql.Driver
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    username: ${PERMISSION_POSTGRES_USER}
+    password: ${PERMISSION_POSTGRES_PASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
