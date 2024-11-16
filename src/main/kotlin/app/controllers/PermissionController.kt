@@ -9,6 +9,7 @@ import com.example.springboot.app.utils.PermissionType
 import org.springframework.http.ResponseEntity
 import com.example.springboot.app.utils.PermissionType.*
 import com.example.springboot.app.utils.ShareRequest
+import com.example.springboot.app.utils.SnippetsGroup
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
@@ -66,6 +67,21 @@ class PermissionController(private val permissionService: PermissionService) {
         }
     }
 
+
+    @GetMapping("/get_all")
+    fun getAllSnippets(
+        @AuthenticationPrincipal jwt: Jwt
+    ): ResponseEntity<SnippetsGroup> {
+        return try {
+            val userId = getUserIdFromJWT(jwt)
+            val snippets = permissionService.getSnippetsByUserId(userId)
+            ResponseEntity.ok(SnippetsGroup(snippets))
+        } catch (e: Exception) {
+            println(e.message)
+            ResponseEntity.status(500).body(null)
+        }
+    }
+
     private fun getUserIdFromJWT(jwt: Jwt): String {
         val auth = OAuth2ResourceServerSecurityConfiguration(
             System.getenv("AUTH0_AUDIENCE"),
@@ -73,5 +89,4 @@ class PermissionController(private val permissionService: PermissionService) {
         ).jwtDecoder()
         return auth.decode(jwt.tokenValue).subject!!
     }
-
 }

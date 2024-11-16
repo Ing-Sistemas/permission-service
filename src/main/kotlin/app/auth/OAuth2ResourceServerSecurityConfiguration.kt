@@ -26,6 +26,8 @@ class OAuth2ResourceServerSecurityConfiguration(@Value("\${auth0.audience}")
         http.authorizeHttpRequests {
             it
                 .requestMatchers("/").permitAll()
+                .requestMatchers(GET, "/api/health/check").permitAll()
+                .requestMatchers(GET, "/api/health/ping").permitAll()
                 .requestMatchers(GET, "/api/get").hasAuthority("SCOPE_read:snippets")
                 .requestMatchers(POST, "/api/create").hasAuthority("SCOPE_write:snippets")
                 .requestMatchers(PUT, "/api/update").hasAuthority("SCOPE_write:snippets")
