@@ -85,7 +85,8 @@ class PermissionController(private val permissionService: PermissionService) {
     private fun getUserIdFromJWT(jwt: Jwt): String {
         val auth = OAuth2ResourceServerSecurityConfiguration(
             System.getenv("AUTH0_AUDIENCE"),
-            System.getenv("AUTH_SERVER_URI")
+            System.getenv("AUTH_SERVER_URI"),
+            System.getenv("UI_URL")
         ).jwtDecoder()
         return auth.decode(jwt.tokenValue).subject!!
     }
