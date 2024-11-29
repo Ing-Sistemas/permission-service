@@ -2,7 +2,6 @@ package com.example.springboot.app.controllers
 
 import com.example.springboot.app.auth.OAuth2ResourceServerSecurityConfiguration
 import com.example.springboot.app.dto.PermissionDTO
-import com.example.springboot.app.dto.PermissionRes
 import com.example.springboot.app.repository.entity.PermissionEntity
 import com.example.springboot.app.service.PermissionService
 import com.example.springboot.app.utils.PermissionRequest
