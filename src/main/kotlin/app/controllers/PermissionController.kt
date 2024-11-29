@@ -101,4 +101,18 @@ class PermissionController(private val permissionService: PermissionService) {
             permissionEntity.permissions
         )
     }
+
+    @PostMapping("/delete")
+    fun deletePermissions(
+        @RequestBody permissionRequest: PermissionRequest,
+        @AuthenticationPrincipal jwt: Jwt,
+    ): ResponseEntity<Int> {
+        val userId = getUserIdFromJWT(jwt)
+        return try {
+            ResponseEntity.ok(permissionService.deleteSnippetByIdAndUserId(userId, permissionRequest.snippetId))
+        } catch (e: Exception) {
+            println(e.message)
+            ResponseEntity.status(500).body(0)
+        }
+    }
 }
