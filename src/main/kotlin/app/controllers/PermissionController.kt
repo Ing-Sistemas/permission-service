@@ -2,6 +2,7 @@ package com.example.springboot.app.controllers
 
 import com.example.springboot.app.auth.OAuth2ResourceServerSecurityConfiguration
 import com.example.springboot.app.dto.PermissionDTO
+import com.example.springboot.app.dto.PermissionRes
 import com.example.springboot.app.repository.entity.PermissionEntity
 import com.example.springboot.app.service.PermissionService
 import com.example.springboot.app.utils.PermissionRequest
@@ -9,7 +10,7 @@ import com.example.springboot.app.utils.PermissionType
 import org.springframework.http.ResponseEntity
 import com.example.springboot.app.utils.PermissionType.*
 import com.example.springboot.app.utils.ShareRequest
-import com.example.springboot.app.utils.SnippetsGroup
+import org.slf4j.LoggerFactory
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api")
 class PermissionController(private val permissionService: PermissionService) {
+
+    private val logger = LoggerFactory.getLogger(PermissionController::class.java)
 
     @PostMapping("/create")
     fun createPermission(
@@ -31,20 +34,21 @@ class PermissionController(private val permissionService: PermissionService) {
             val permissionEntity = permissionService.addPermission(permissionDTO)
             ResponseEntity.ok(permissionEntity)
         } catch (e: Exception) {
-            println(e.message)
+            logger.error(e.message)
             ResponseEntity.status(500).body(null)
         }
     }
 
-    @GetMapping("/get")
+    @GetMapping
     fun getPermissionById(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam permissionRequest: PermissionRequest
-        ): ResponseEntity<Set<PermissionType>> {
+        @RequestParam snippetId: String
+        ): ResponseEntity<PermissionDTO> {
         try {
             val userId = getUserIdFromJWT(jwt)
-            val permissions = permissionService.getPermissions(permissionRequest.snippetId, userId)
-            return ResponseEntity.ok(permissions.permissions)
+            val permissions = permissionService.getPermissions(snippetId, userId)
+            println(permissions)
+            return ResponseEntity.ok(translate(permissions))
         } catch (e: Exception) {
             println(e.message)
             return ResponseEntity.status(500).body(null)
@@ -71,11 +75,12 @@ class PermissionController(private val permissionService: PermissionService) {
     @GetMapping("/get_all")
     fun getAllSnippets(
         @AuthenticationPrincipal jwt: Jwt
-    ): ResponseEntity<SnippetsGroup> {
+    ): ResponseEntity<List<String>> {
         return try {
             val userId = getUserIdFromJWT(jwt)
             val snippets = permissionService.getSnippetsByUserId(userId)
-            ResponseEntity.ok(SnippetsGroup(snippets))
+            logger.info("Snippets: $snippets")
+            ResponseEntity.ok(snippets)
         } catch (e: Exception) {
             println(e.message)
             ResponseEntity.status(500).body(null)
@@ -88,5 +93,13 @@ class PermissionController(private val permissionService: PermissionService) {
             System.getenv("AUTH_SERVER_URI")
         ).jwtDecoder()
         return auth.decode(jwt.tokenValue).subject!!
+    }
+
+    private fun translate(permissionEntity: PermissionEntity) : PermissionDTO {
+        return PermissionDTO(
+            permissionEntity.snippetId,
+            permissionEntity.userId,
+            permissionEntity.permissions
+        )
     }
 }

@@ -21,4 +21,4 @@ spring:
           client-secret: ${AUTH_CLIENT_SECRET}
 
 server:
-  port: 8080
+  port: ${PERMISSION_PORT}
