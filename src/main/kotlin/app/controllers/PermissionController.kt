@@ -38,10 +38,10 @@ class PermissionController(private val permissionService: PermissionService) {
         }
     }
 
-    @GetMapping
+    @GetMapping("/{snippetId}")
     fun getPermissionById(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam snippetId: String
+        @PathVariable snippetId: String
         ): ResponseEntity<PermissionDTO> {
         try {
             val userId = getUserIdFromJWT(jwt)
@@ -86,12 +86,28 @@ class PermissionController(private val permissionService: PermissionService) {
         }
     }
 
+    //TODO the jwt is m2m, so I need the userId as param
+    @GetMapping("/get_all/{userId}")
+    fun getAllSnippets(
+        @PathVariable userId: String,
+    ): ResponseEntity<List<String>> {
+        return try {
+            val snippets = permissionService.getSnippetsByUserId(userId)
+            logger.info("Snippets : $snippets")
+            ResponseEntity.ok(snippets)
+        } catch (e: Exception) {
+            println(e.message)
+            ResponseEntity.status(500).body(null)
+        }
+    }
+
     private fun getUserIdFromJWT(jwt: Jwt): String {
         val auth = OAuth2ResourceServerSecurityConfiguration(
             System.getenv("AUTH0_AUDIENCE"),
             System.getenv("AUTH_SERVER_URI")
         ).jwtDecoder()
-        return auth.decode(jwt.tokenValue).subject!!
+        val subject = auth.decode(jwt.tokenValue).subject
+        return subject?.removePrefix("auth0|") ?: throw IllegalArgumentException("User ID is null or invalid")
     }
 
     private fun translate(permissionEntity: PermissionEntity) : PermissionDTO {
