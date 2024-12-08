@@ -25,15 +25,8 @@ class OAuth2ResourceServerSecurityConfiguration(@Value("\${auth0.audience}")
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.authorizeHttpRequests {
             it
-                .requestMatchers("/").permitAll()
                 .requestMatchers(GET, "/api/health/ping").anonymous()
                 .requestMatchers(GET, "/api/health/check").anonymous()
-                .requestMatchers(GET, "/api/{snippetId}").permitAll()
-                .requestMatchers(POST, "/api/share").permitAll()
-                .requestMatchers(POST, "/api/create").permitAll()
-                .requestMatchers(GET, "/api/get_all").permitAll()
-                .requestMatchers(GET, "/api/get_all/{userId}").permitAll()
-                .requestMatchers(DELETE, "/api/delete").permitAll()
                 .anyRequest().authenticated()
         }
             .oauth2ResourceServer { it.jwt(withDefaults()) }
