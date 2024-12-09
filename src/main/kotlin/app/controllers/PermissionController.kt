@@ -5,7 +5,6 @@ import com.example.springboot.app.dto.PermissionDTO
 import com.example.springboot.app.repository.entity.PermissionEntity
 import com.example.springboot.app.service.PermissionService
 import com.example.springboot.app.utils.PermissionRequest
-import com.example.springboot.app.utils.PermissionType
 import org.springframework.http.ResponseEntity
 import com.example.springboot.app.utils.PermissionType.*
 import com.example.springboot.app.utils.ShareRequest
@@ -79,21 +78,6 @@ class PermissionController(private val permissionService: PermissionService) {
             val userId = getUserIdFromJWT(jwt)
             val snippets = permissionService.getSnippetsByUserId(userId)
             logger.info("Snippets: $snippets")
-            ResponseEntity.ok(snippets)
-        } catch (e: Exception) {
-            println(e.message)
-            ResponseEntity.status(500).body(null)
-        }
-    }
-
-    //TODO the jwt is m2m, so I need the userId as param
-    @GetMapping("/get_all/{userId}")
-    fun getAllSnippets(
-        @PathVariable userId: String,
-    ): ResponseEntity<List<String>> {
-        return try {
-            val snippets = permissionService.getSnippetsByUserId(userId)
-            logger.info("Snippets : $snippets")
             ResponseEntity.ok(snippets)
         } catch (e: Exception) {
             println(e.message)
