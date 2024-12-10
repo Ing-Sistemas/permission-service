@@ -25,4 +25,4 @@ auth0:
 ui:
   url: ${UI_URL}
 server:
-  port: 8080
+  port: ${PERMISSION_PORT}
