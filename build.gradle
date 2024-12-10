@@ -4,6 +4,7 @@ plugins {
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
 	id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.25'
+	id 'jacoco'
 }
 
 group = 'com.example'
@@ -54,6 +55,50 @@ kotlin {
 	}
 }
 
+
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy 'jacocoTestReport'
+}
+
+jacoco {
+	toolVersion = '0.8.10'
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required.set(true)
+		csv.required.set(false)
+		html.required.set(true)
+	}
+	classDirectories.setFrom(
+			fileTree(
+					dir: 'build/classes/java/main',
+					exclude: ['com/example/springboot/app/controllers/**']
+			)
+	)
+}
+
+jacocoTestCoverageVerification {
+	dependsOn test
+	classDirectories.setFrom(
+			fileTree(
+					dir: 'build/classes/java/main',
+					exclude: ['com/example/springboot/app/controllers/**']
+			)
+	)
+	violationRules {
+		rule {
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.80
+			}
+		}
+	}
+}
+
+tasks.check {
+	dependsOn jacocoTestCoverageVerification
 }
