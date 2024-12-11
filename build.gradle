@@ -7,12 +7,23 @@ plugins {
 }
 
 group = 'com.example'
-version = '0.0.1-SNAPSHOT'
+
 
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
 	}
+}
+
+jar {
+//    archiveBaseName.set('permission-service')
+//    archiveVersion.set('1.0.0')
+//    archiveClassifier.set('')
+//    manifest {
+//        attributes(
+//                'Main-Class': 'com.example.springboot.PermissionServiceApplication'
+//        )
+//    }
 }
 
 repositories {
@@ -29,6 +40,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 }
 
 kotlin {
