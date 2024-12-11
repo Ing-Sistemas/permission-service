@@ -7,11 +7,12 @@ import jakarta.persistence.*
 @Table(name = "permission_entity")
 data class PermissionEntity(
     @Id
+    @Column(name = "user_id", nullable = false)
+    val userId: String,
+
     @Column(name = "snippet_id", nullable = false)
     val snippetId: String,
 
-    @Column(name = "user_id", nullable = false)
-    val userId: String,
 
     @ElementCollection(targetClass = PermissionType::class, fetch = FetchType.EAGER)
     @CollectionTable(
