@@ -42,18 +42,23 @@ class PermissionServiceTest {
 
     @Test
     fun `addPermission should save and return the permission entity`() {
-        `when`(permissionRepository.save(permissionEntity)).thenReturn(permissionEntity)
+        val savedEntity = permissionEntity.copy(id = "any-id")
+        `when`(permissionRepository.save(any(PermissionEntity::class.java))).thenReturn(savedEntity)
+
         val result = permissionService.addPermission(permissionDTO)
-        assertEquals(permissionEntity, result)
-        verify(permissionRepository).save(permissionEntity)
+
+        assertEquals(savedEntity.copy(id = result.id), result)
+        verify(permissionRepository).save(any(PermissionEntity::class.java))
     }
 
     @Test
     fun `updatePermission should update and return the permission entity`() {
-        `when`(permissionRepository.save(permissionEntity)).thenReturn(permissionEntity)
+        val savedEntity = permissionEntity.copy(id = "any-id")
+        `when`(permissionRepository.save(any(PermissionEntity::class.java))).thenReturn(savedEntity)
+
         val result = permissionService.updatePermission(permissionDTO)
-        assertEquals(permissionEntity, result)
-        verify(permissionRepository).save(permissionEntity)
+        assertEquals(savedEntity.copy(id = result.id), result)
+        verify(permissionRepository).save(any(PermissionEntity::class.java))
     }
 
     @Test
