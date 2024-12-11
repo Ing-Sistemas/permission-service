@@ -17,21 +17,16 @@ import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
 @EnableWebSecurity
-class OAuth2ResourceServerSecurityConfiguration(@Value("\${auth0.audience}")
-                                                val audience: String,
-                                                @Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-                                                val issuer: String,) {
+class OAuth2ResourceServerSecurityConfiguration(
+    @Value("\${auth0.audience}") val audience: String,
+    @Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}") val issuer: String
+) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.authorizeHttpRequests {
             it
-                .requestMatchers("/").permitAll()
-                .requestMatchers(GET, "/api/health/check").permitAll()
-                .requestMatchers(GET, "/api/health/ping").permitAll()
-                .requestMatchers(GET, "/api/get").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/api/create").hasAuthority("SCOPE_write:snippets")
-                .requestMatchers(PUT, "/api/update").hasAuthority("SCOPE_write:snippets")
-                .requestMatchers(DELETE, "/api/delete").hasAuthority("SCOPE_write:snippets")
+                .requestMatchers(GET, "/api/health/ping").anonymous()
+                .requestMatchers(GET, "/api/health/check").anonymous()
                 .anyRequest().authenticated()
         }
             .oauth2ResourceServer { it.jwt(withDefaults()) }

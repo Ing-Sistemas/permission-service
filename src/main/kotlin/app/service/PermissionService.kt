@@ -22,7 +22,6 @@ class PermissionService @Autowired constructor(
 
     fun addPermission(permissionDTO: PermissionDTO): PermissionEntity {
         val permissionEntity = translate(permissionDTO)
-        println(permissionEntity.permissions)
         return permissionRepository.save(permissionEntity)
     }
 

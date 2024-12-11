@@ -5,7 +5,6 @@ import com.example.springboot.app.dto.PermissionDTO
 import com.example.springboot.app.repository.entity.PermissionEntity
 import com.example.springboot.app.service.PermissionService
 import com.example.springboot.app.utils.PermissionRequest
-import com.example.springboot.app.utils.PermissionType
 import org.springframework.http.ResponseEntity
 import com.example.springboot.app.utils.PermissionType.*
 import com.example.springboot.app.utils.ShareRequest
@@ -24,24 +23,24 @@ class PermissionController(private val permissionService: PermissionService) {
     fun createPermission(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestBody permissionRequest: PermissionRequest
-    ): ResponseEntity<PermissionEntity> {
+    ): ResponseEntity<PermissionDTO> {
         return try {
             val snippetId = permissionRequest.snippetId
             val userId = getUserIdFromJWT(jwt)
             val ownerPermissions = setOf(READ, WRITE, EXECUTE, SHARE)
             val permissionDTO = PermissionDTO(snippetId, userId, ownerPermissions)
             val permissionEntity = permissionService.addPermission(permissionDTO)
-            ResponseEntity.ok(permissionEntity)
+            ResponseEntity.ok(translate(permissionEntity))
         } catch (e: Exception) {
             logger.error(e.message)
             ResponseEntity.status(500).body(null)
         }
     }
 
-    @GetMapping
+    @GetMapping("/{snippetId}")
     fun getPermissionById(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam snippetId: String
+        @PathVariable snippetId: String
         ): ResponseEntity<PermissionDTO> {
         try {
             val userId = getUserIdFromJWT(jwt)
@@ -58,12 +57,12 @@ class PermissionController(private val permissionService: PermissionService) {
     fun sharePermission(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestBody shareRequest: ShareRequest
-    ): ResponseEntity<PermissionEntity> {
+    ): ResponseEntity<PermissionDTO> {
         return try {
             val snippetId = shareRequest.snippetId
             val userId = shareRequest.friendId
             val permissionDTO = PermissionDTO(snippetId, userId, setOf(READ))
-            ResponseEntity.ok(permissionService.updatePermission(permissionDTO))
+            ResponseEntity.ok(translate(permissionService.updatePermission(permissionDTO)))
         } catch (e: Exception) {
             println(e.message)
             ResponseEntity.status(500).body(null)
@@ -91,7 +90,8 @@ class PermissionController(private val permissionService: PermissionService) {
             System.getenv("AUTH0_AUDIENCE"),
             System.getenv("AUTH_SERVER_URI")
         ).jwtDecoder()
-        return auth.decode(jwt.tokenValue).subject!!
+        val subject = auth.decode(jwt.tokenValue).subject
+        return subject?.removePrefix("auth0|") ?: throw IllegalArgumentException("User ID is null or invalid")
     }
 
     private fun translate(permissionEntity: PermissionEntity) : PermissionDTO {
