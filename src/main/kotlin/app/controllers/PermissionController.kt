@@ -26,6 +26,7 @@ class PermissionController(private val permissionService: PermissionService) {
     ): ResponseEntity<PermissionDTO> {
         return try {
             logger.trace("Creating permission for snippet with id: ${permissionRequest.snippetId}")
+            logger.info("Creating permission for snippet with id: ${permissionRequest.snippetId}")
             val snippetId = permissionRequest.snippetId
             val userId = getUserIdFromJWT(jwt)
             val ownerPermissions = setOf(READ, WRITE, EXECUTE, SHARE)
@@ -45,6 +46,7 @@ class PermissionController(private val permissionService: PermissionService) {
         ): ResponseEntity<PermissionDTO> {
         try {
             logger.trace("Getting permissions for snippet with id: $snippetId")
+            logger.info("Getting permissions for snippet with id: $snippetId")
             val userId = getUserIdFromJWT(jwt)
             val permissions = permissionService.getPermissions(snippetId, userId)
             println(permissions)
@@ -62,9 +64,10 @@ class PermissionController(private val permissionService: PermissionService) {
     ): ResponseEntity<PermissionDTO> {
         return try {
             logger.trace("Sharing snippet with id: ${shareRequest.snippetId} with user: ${shareRequest.friendId}")
+            logger.info("Sharing snippet with id: ${shareRequest.snippetId} with user: ${shareRequest.friendId}")
             val snippetId = shareRequest.snippetId
             val userId = shareRequest.friendId
-            val permissionDTO = PermissionDTO(snippetId, userId, setOf(READ))
+            val permissionDTO = PermissionDTO(snippetId, userId, setOf(WRITE))
             ResponseEntity.ok(translate(permissionService.updatePermission(permissionDTO)))
         } catch (e: Exception) {
             println(e.message)
@@ -79,6 +82,7 @@ class PermissionController(private val permissionService: PermissionService) {
     ): ResponseEntity<List<String>> {
         return try {
             logger.trace("Getting all snippets")
+            logger.info("Getting all snippets")
             val userId = getUserIdFromJWT(jwt)
             val snippets = permissionService.getSnippetsByUserId(userId)
             ResponseEntity.ok(snippets)
@@ -111,6 +115,7 @@ class PermissionController(private val permissionService: PermissionService) {
         @AuthenticationPrincipal jwt: Jwt,
     ): ResponseEntity<Int> {
         logger.trace("Deleting snippet with id: ${permissionRequest.snippetId}")
+        logger.info("Deleting snippet with id: ${permissionRequest.snippetId}")
         val userId = getUserIdFromJWT(jwt)
         return try {
             ResponseEntity.ok(permissionService.deleteSnippetByIdAndUserId(userId, permissionRequest.snippetId))

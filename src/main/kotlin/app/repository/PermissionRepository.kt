@@ -16,7 +16,7 @@ interface PermissionRepository : JpaRepository<PermissionEntity, String> {
     fun findBySnippetId(snippetId: String): PermissionEntity
     @Query(
         "SELECT p.snippetId FROM PermissionEntity p WHERE p.userId = :userId AND " +
-                "(:readPermission MEMBER OF p.permissions AND :writePermission MEMBER OF p.permissions)"
+                "(:readPermission MEMBER OF p.permissions OR :writePermission MEMBER OF p.permissions)"
     )
     fun findSnippetIdsByUserIdAndOwnerPermissions(
         @Param("userId") userId: String,
