@@ -1,17 +1,24 @@
 package com.example.springboot.app.controllers
-
 import com.example.springboot.app.auth.OAuth2ResourceServerSecurityConfiguration
 import com.example.springboot.app.dto.PermissionDTO
 import com.example.springboot.app.repository.entity.PermissionEntity
 import com.example.springboot.app.service.PermissionService
 import com.example.springboot.app.utils.PermissionRequest
-import com.example.springboot.app.utils.PermissionType.*
+import com.example.springboot.app.utils.PermissionType.EXECUTE
+import com.example.springboot.app.utils.PermissionType.READ
+import com.example.springboot.app.utils.PermissionType.SHARE
+import com.example.springboot.app.utils.PermissionType.WRITE
 import com.example.springboot.app.utils.ShareRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api")
