@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class UtilsTests {
-
     @Test
     fun `PermissionRequest should store correct values`() {
         val request = PermissionRequest("123")

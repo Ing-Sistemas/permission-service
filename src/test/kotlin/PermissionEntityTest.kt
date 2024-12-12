@@ -6,15 +6,15 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class PermissionEntityTest {
-
     @Test
     fun `should create PermissionEntity with all fields`() {
         val permissions = setOf(PermissionType.READ, PermissionType.WRITE)
-        val permissionEntity = PermissionEntity(
-            snippetId = "snippet123",
-            userId = "user456",
-            permissions = permissions
-        )
+        val permissionEntity =
+            PermissionEntity(
+                snippetId = "snippet123",
+                userId = "user456",
+                permissions = permissions,
+            )
 
         assertNotNull(permissionEntity)
         assertEquals("snippet123", permissionEntity.snippetId)
@@ -24,10 +24,11 @@ class PermissionEntityTest {
 
     @Test
     fun `should create PermissionEntity with default permissions`() {
-        val permissionEntity = PermissionEntity(
-            snippetId = "snippet789",
-            userId = "user987"
-        )
+        val permissionEntity =
+            PermissionEntity(
+                snippetId = "snippet789",
+                userId = "user987",
+            )
 
         assertNotNull(permissionEntity)
         assertEquals("snippet789", permissionEntity.snippetId)
@@ -37,11 +38,12 @@ class PermissionEntityTest {
 
     @Test
     fun `should handle empty snippetId and userId`() {
-        val permissionEntity = PermissionEntity(
-            snippetId = "",
-            userId = "",
-            permissions = setOf(PermissionType.EXECUTE)
-        )
+        val permissionEntity =
+            PermissionEntity(
+                snippetId = "",
+                userId = "",
+                permissions = setOf(PermissionType.EXECUTE),
+            )
 
         assertNotNull(permissionEntity)
         assertEquals("", permissionEntity.snippetId)

@@ -4,18 +4,19 @@ import com.example.springboot.app.dto.PermissionDTO
 import com.example.springboot.app.repository.PermissionRepository
 import com.example.springboot.app.repository.entity.PermissionEntity
 import com.example.springboot.app.utils.PermissionType
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.*
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.any
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 
 @ExtendWith(MockitoExtension::class)
 class PermissionServiceTest {
-
     @Mock
     private lateinit var permissionRepository: PermissionRepository
 
@@ -27,17 +28,19 @@ class PermissionServiceTest {
 
     @BeforeEach
     fun setUp() {
-        permissionDTO = PermissionDTO(
-            snippetId = "123",
-            userId = "user1",
-            permissions = setOf(PermissionType.READ, PermissionType.WRITE)
-        )
+        permissionDTO =
+            PermissionDTO(
+                snippetId = "123",
+                userId = "user1",
+                permissions = setOf(PermissionType.READ, PermissionType.WRITE),
+            )
 
-        permissionEntity = PermissionEntity(
-            snippetId = "123",
-            userId = "user1",
-            permissions = setOf(PermissionType.READ, PermissionType.WRITE)
-        )
+        permissionEntity =
+            PermissionEntity(
+                snippetId = "123",
+                userId = "user1",
+                permissions = setOf(PermissionType.READ, PermissionType.WRITE),
+            )
     }
 
     @Test

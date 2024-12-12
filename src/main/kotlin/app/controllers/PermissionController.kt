@@ -5,10 +5,10 @@ import com.example.springboot.app.dto.PermissionDTO
 import com.example.springboot.app.repository.entity.PermissionEntity
 import com.example.springboot.app.service.PermissionService
 import com.example.springboot.app.utils.PermissionRequest
-import org.springframework.http.ResponseEntity
 import com.example.springboot.app.utils.PermissionType.*
 import com.example.springboot.app.utils.ShareRequest
 import org.slf4j.LoggerFactory
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
@@ -16,13 +16,12 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api")
 class PermissionController(private val permissionService: PermissionService) {
-
     private val logger = LoggerFactory.getLogger(PermissionController::class.java)
 
     @PostMapping("/create")
     fun createPermission(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestBody permissionRequest: PermissionRequest
+        @RequestBody permissionRequest: PermissionRequest,
     ): ResponseEntity<PermissionDTO> {
         return try {
             logger.trace("Creating permission for snippet with id: ${permissionRequest.snippetId}")
@@ -42,8 +41,8 @@ class PermissionController(private val permissionService: PermissionService) {
     @GetMapping("/{snippetId}")
     fun getPermissionById(
         @AuthenticationPrincipal jwt: Jwt,
-        @PathVariable snippetId: String
-        ): ResponseEntity<PermissionDTO> {
+        @PathVariable snippetId: String,
+    ): ResponseEntity<PermissionDTO> {
         try {
             logger.trace("Getting permissions for snippet with id: $snippetId")
             logger.info("Getting permissions for snippet with id: $snippetId")
@@ -60,7 +59,7 @@ class PermissionController(private val permissionService: PermissionService) {
     @PostMapping("/share")
     fun sharePermission(
         @AuthenticationPrincipal jwt: Jwt,
-        @RequestBody shareRequest: ShareRequest
+        @RequestBody shareRequest: ShareRequest,
     ): ResponseEntity<PermissionDTO> {
         return try {
             logger.trace("Sharing snippet with id: ${shareRequest.snippetId} with user: ${shareRequest.friendId}")
@@ -75,10 +74,9 @@ class PermissionController(private val permissionService: PermissionService) {
         }
     }
 
-
     @GetMapping("/get_all")
     fun getAllSnippets(
-        @AuthenticationPrincipal jwt: Jwt
+        @AuthenticationPrincipal jwt: Jwt,
     ): ResponseEntity<List<String>> {
         return try {
             logger.trace("Getting all snippets")
@@ -93,19 +91,20 @@ class PermissionController(private val permissionService: PermissionService) {
     }
 
     private fun getUserIdFromJWT(jwt: Jwt): String {
-        val auth = OAuth2ResourceServerSecurityConfiguration(
-            System.getenv("AUTH0_AUDIENCE"),
-            System.getenv("AUTH_SERVER_URI")
-        ).jwtDecoder()
+        val auth =
+            OAuth2ResourceServerSecurityConfiguration(
+                System.getenv("AUTH0_AUDIENCE"),
+                System.getenv("AUTH_SERVER_URI"),
+            ).jwtDecoder()
         val subject = auth.decode(jwt.tokenValue).subject
         return subject?.removePrefix("auth0|") ?: throw IllegalArgumentException("User ID is null or invalid")
     }
 
-    private fun translate(permissionEntity: PermissionEntity) : PermissionDTO {
+    private fun translate(permissionEntity: PermissionEntity): PermissionDTO {
         return PermissionDTO(
             permissionEntity.snippetId,
             permissionEntity.userId,
-            permissionEntity.permissions
+            permissionEntity.permissions,
         )
     }
 
@@ -128,7 +127,7 @@ class PermissionController(private val permissionService: PermissionService) {
     @GetMapping("/correlate/{cId}")
     fun correlation(
         @PathVariable cId: String,
-        @AuthenticationPrincipal jwt: Jwt
+        @AuthenticationPrincipal jwt: Jwt,
     ): ResponseEntity<Void> {
         logger.info("Correlation ID: $cId")
         return ResponseEntity.ok().build()
