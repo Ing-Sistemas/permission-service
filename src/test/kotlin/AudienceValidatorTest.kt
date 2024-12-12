@@ -1,15 +1,14 @@
 package com.example.springboot.app.auth
 
 import org.junit.jupiter.api.Test
-import org.springframework.security.oauth2.core.OAuth2Error
-import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
+import org.springframework.security.oauth2.core.OAuth2Error
+import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult
+import org.springframework.security.oauth2.jwt.Jwt
 import kotlin.test.assertEquals
 
 class AudienceValidatorTest {
-
     private val audience = "expected-audience"
     private val validator = AudienceValidator(audience)
 
@@ -34,5 +33,4 @@ class AudienceValidatorTest {
         assertEquals(expectedError.errorCode, result.errors.firstOrNull()?.errorCode)
         assertEquals(expectedError.description, result.errors.firstOrNull()?.description)
     }
-
 }

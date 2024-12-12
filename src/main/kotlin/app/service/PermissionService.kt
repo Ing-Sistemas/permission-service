@@ -9,45 +9,52 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class PermissionService @Autowired constructor(
-    private val permissionRepository: PermissionRepository
-) {
-
-    private val logger = LoggerFactory.getLogger(PermissionService::class.java)
+class PermissionService
+    @Autowired
+    constructor(
+        private val permissionRepository: PermissionRepository,
+    ) {
+        private val logger = LoggerFactory.getLogger(PermissionService::class.java)
 
 //    fun getPermissionsByUserId(userId: String): String {
 //        val permission = permissionRepository.findByUserIdAndSnippetId(userId)
 //        return ResponseEntity.ok(permission.permissions)
 //    }
 
-    fun addPermission(permissionDTO: PermissionDTO): PermissionEntity {
-        val permissionEntity = translate(permissionDTO)
-        return permissionRepository.save(permissionEntity)
-    }
+        fun addPermission(permissionDTO: PermissionDTO): PermissionEntity {
+            val permissionEntity = translate(permissionDTO)
+            return permissionRepository.save(permissionEntity)
+        }
 
-    fun updatePermission(permissionDTO: PermissionDTO): PermissionEntity {
-        return permissionRepository.save(translate(permissionDTO))
-    }
+        fun updatePermission(permissionDTO: PermissionDTO): PermissionEntity {
+            return permissionRepository.save(translate(permissionDTO))
+        }
 
-    fun getPermissions(snippetId: String, userId: String): PermissionEntity {
-        return permissionRepository.findByUserIdAndSnippetId(userId, snippetId)
-    }
+        fun getPermissions(
+            snippetId: String,
+            userId: String,
+        ): PermissionEntity {
+            return permissionRepository.findByUserIdAndSnippetId(userId, snippetId)
+        }
 
-    fun getSnippetsByUserId(userId: String): List<String> {
-        return permissionRepository.findSnippetIdsByUserIdAndOwnerPermissions(userId)
-    }
+        fun getSnippetsByUserId(userId: String): List<String> {
+            return permissionRepository.findSnippetIdsByUserIdAndOwnerPermissions(userId)
+        }
 
-    @Transactional
-    fun deleteSnippetByIdAndUserId(uId: String, sId: String): Int {
-        val res = permissionRepository.deleteByUserIdAndSnippetId(uId, sId)
-        return res
-    }
+        @Transactional
+        fun deleteSnippetByIdAndUserId(
+            uId: String,
+            sId: String,
+        ): Int {
+            val res = permissionRepository.deleteByUserIdAndSnippetId(uId, sId)
+            return res
+        }
 
-    private fun translate(permissionDTO: PermissionDTO): PermissionEntity{
-        return PermissionEntity(
-            snippetId = permissionDTO.snippetId,
-            userId = permissionDTO.userId,
-            permissions = permissionDTO.permissions
-        )
+        private fun translate(permissionDTO: PermissionDTO): PermissionEntity {
+            return PermissionEntity(
+                snippetId = permissionDTO.snippetId,
+                userId = permissionDTO.userId,
+                permissions = permissionDTO.permissions,
+            )
+        }
     }
-}
