@@ -4,6 +4,7 @@ plugins {
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
 	id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.25'
+	id 'jacoco'
 }
 
 group = 'com.example'
@@ -37,6 +38,10 @@ dependencies {
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	runtimeOnly 'org.postgresql:postgresql'
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("org.mockito:mockito-junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -50,6 +55,56 @@ kotlin {
 	}
 }
 
+
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy 'jacocoTestReport'
+}
+
+jacoco {
+	toolVersion = '0.8.10'
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required.set(true)
+		csv.required.set(false)
+		html.required.set(true)
+	}
+	classDirectories.setFrom(
+			fileTree(
+					dir: 'build/classes/kotlin/main',
+					exclude: [
+							'com/example/springboot/app/controllers/**',
+							'com/example/springboot/app/auth/**'
+					]
+			)
+	)
+}
+
+jacocoTestCoverageVerification {
+	dependsOn test
+	classDirectories.setFrom(
+			fileTree(
+					dir: 'build/classes/kotlin/main',
+					exclude: [
+							'com/example/springboot/app/controllers/**',
+							'com/example/springboot/app/auth/**'
+					]
+			)
+	)
+	violationRules {
+		rule {
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.80
+			}
+		}
+	}
+}
+
+tasks.check {
+	dependsOn jacocoTestCoverageVerification
 }

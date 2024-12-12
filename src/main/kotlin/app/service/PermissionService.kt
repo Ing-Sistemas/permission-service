@@ -39,9 +39,7 @@ class PermissionService @Autowired constructor(
 
     @Transactional
     fun deleteSnippetByIdAndUserId(uId: String, sId: String): Int {
-        logger.info("Deleting permission for user $uId and snippet $sId")
         val res = permissionRepository.deleteByUserIdAndSnippetId(uId, sId)
-        logger.info("Was the deletion successful? $res")
         return res
     }
 
